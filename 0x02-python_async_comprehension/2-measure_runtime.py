@@ -10,6 +10,6 @@ async_comprehension = using('1-async_comprehension').async_comprehension
 
 async def measure_runtime() -> float:
     """Function documantation"""
-    start_time = time.time()
+    start = time.time()
     await asyncio.gather(*(async_comprehension() for i in range(4)))
-    return time.time() - start_time
+    return time.time() - start
