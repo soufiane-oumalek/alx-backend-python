@@ -1,7 +1,5 @@
 #!/usr/bin/env python3
 """Module for testing client"""
-
-
 import unittest
 from unittest.mock import patch, PropertyMock
 from parameterized import parameterized
@@ -19,7 +17,6 @@ class TestGithubOrgClient(unittest.TestCase):
     def test_org(self, input, mock):
         """Test that GithubOrgClient.
         org returns correct value"""
-
         test_class = GithubOrgClient(input)
         test_class.org()
         url = (f'https://api.github.com/orgs/{input}')
