@@ -17,7 +17,8 @@ class TestGithubOrgClient(unittest.TestCase):
     ])
     @patch('client.get_json')
     def test_org(self, input, mock):
-        """Test that GithubOrgClient.org returns correct value"""
+        """Test that GithubOrgClient.
+        org returns correct value"""
 
         test_class = GithubOrgClient(input)
         test_class.org()
