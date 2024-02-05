@@ -1,70 +1,66 @@
 #!/usr/bin/env python3
-"""
-This module provides utilities for interacting with GitHub organizations.
-"""
+"""Module for testing client"""
 
-import requests
-from functools import wraps
-from typing import (
-    Mapping,
-    Sequence,
-    Any,
-    Dict,
-    Callable,
-)
-
-__all__ = [
-    "access_nested_map",
-    "get_json",
-    "memoize",
-]
+import unittest
+from unittest.mock import patch, PropertyMock
+from parameterized import parameterized
+from client import GithubOrgClient
 
 
-def access_nested_map(nested_map: Mapping, path: Sequence) -> Any:
-    """
-    Access nested map with key path.
-    Example
-    -------
-    >>> nested_map = {"a": {"b": {"c": 1}}}
-    >>> access_nested_map(nested_map, ["a", "b", "c"])
-    1
-    """
-    for key in path:
-        if not isinstance(nested_map, Mapping):
-            raise KeyError(key)
-        nested_map = nested_map[key]
+class TestGithubOrgClient(unittest.TestCase):
+    """Class for Testing Github Org Client"""
 
-    return nested_map
+    @parameterized.expand([
+        ('google'),
+        ('abc')
+    ])
+    @patch('client.get_json')
+    def test_org(self, input, mock):
+        """Test that GithubOrgClient.org returns correct value"""
+        test_class = GithubOrgClient(input)
+        test_class.org()
+        mock.assert_called_once_with(f'https://api.github.com/orgs/{input}')
 
+    def test_public_repos_url(self):
+        """Test that the result of _public_repos_url is the
+        """
+        with patch('client.GithubOrgClient.org',
+                   new_callable=PropertyMock) as mock_org:
+            payload = {"repos_url": "World"}
+            mock_org.return_value = payload
+            test_class = GithubOrgClient('test')
+            result = test_class._public_repos_url
+            self.assertEqual(result, payload["repos_url"])
 
-def get_json(url: str) -> Dict:
-    """
-    Get JSON from remote URL.
-    """
-    response = requests.get(url)
-    return response.json()
+    @patch('client.get_json')
+    def test_public_repos(self, mock_get):
+        """Test that the list of repos is what
+        you expect from the chosen payload.
+        """
+        json_payload = [{"name": "Google"}, {"name": "Twitter"}]
+        mock_get.return_value = json_payload
 
+        with patch('client.GithubOrgClient._public_repos_url',
+                   new_callable=PropertyMock) as mock_public_repos_url:
 
-def memoize(fn: Callable) -> Callable:
-    """
-    Decorator to memoize a method.
-    >>> my_object = MyClass()
-    >>> my_object.a_method
-    a_method called
-    42
-    >>> my_object.a_method
-    42
-    """
-    attr_name = "_{}".format(fn.__name__)
+            mock_public_repos_url.return_value = "hello/world"
+            test_class = GithubOrgClient('test')
+            result = test_class.public_repos()
 
-    @wraps(fn)
-    def memoized(self):
-        """Memoized wrapper"""
-        if not hasattr(self, attr_name):
-            setattr(self, attr_name, fn(self))
-        return getattr(self, attr_name)
+            check = [i["name"] for i in json_payload]
+            self.assertEqual(result, check)
 
-    return property(memoized)
+            mock_public_repos_url.assert_called_once()
+            mock_get.assert_called_once()
+
+    @parameterized.expand([
+        ({"license": {"key": "my_license"}}, "my_license", True),
+        ({"license": {"key": "other_license"}}, "my_license", False)
+    ])
+    def test_has_license(self, repo, license_key, expected):
+        """Unit-test for GithubOrgClient.has_license"""
+        result = GithubOrgClient.has_license(repo, license_key)
+        self.assertEqual(result, expected)
 
 
 if __name__ == "__main__":
