@@ -6,6 +6,7 @@ import unittest
 from unittest.mock import patch, Mock
 from parameterized import parameterized
 from utils import access_nested_map, get_json, memoize
+from parameterized import parameterized  # type: ignore
 
 
 class TestAccessNestedMap(unittest.TestCase):
@@ -73,3 +74,7 @@ class TestMemoize(unittest.TestCase):
         self.assertEqual(result1, 42)
         self.assertEqual(result2, 42)
         self.assertEqual(test_instance.call_count, 1)
+
+
+if __name__ == "__main__":
+    unittest.main()
