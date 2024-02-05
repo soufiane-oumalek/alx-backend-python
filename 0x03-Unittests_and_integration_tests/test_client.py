@@ -67,7 +67,3 @@ class TestGithubOrgClient(unittest.TestCase):
         """Unit-test for GithubOrgClient.has_license"""
         result = GithubOrgClient.has_license(repo, license_key)
         self.assertEqual(result, expected)
-
-
-if __name__ == "__main__":
-    unittest.main()
