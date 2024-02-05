@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
-"""testing client"""
+"""
+testing client
+"""
 import unittest
 from unittest.mock import patch, PropertyMock
 from parameterized import parameterized
@@ -7,22 +9,26 @@ from client import GithubOrgClient
 
 
 class TestGithubOrgClient(unittest.TestCase):
-    """ Class for Testing Github Org Client """
-
+    """
+    Class for Testing Github Org Client
+    """
     @parameterized.expand([
         ('google'),
         ('abc')
     ])
     @patch('client.get_json')
-    def test_org(self, input, mock):
-        """Test that GithubOrgClient.org returns the correct value"""
+    def test_org(self, input, mock_get):
+        """
+        Test that GithubOrgClient.org returns the correct value
+        """
         test_class = GithubOrgClient(input)
         test_class.org()
         url = (f'https://api.github.com/orgs/{input}')
-        mock.assert_called_once_with(url)
+        mock_get.assert_called_once_with(url)
 
     def test_public_repos_url(self):
-        """Test that the result of _public_repos_url is the
+        """
+        Test that the result of _public_repos_url is the
         """
         with patch('client.GithubOrgClient.org',
                    new_callable=PropertyMock) as mock_org:
@@ -38,7 +44,7 @@ class TestGithubOrgClient(unittest.TestCase):
         you expect from the chosen payload.
         """
         json_payload = [{"name": "Google"}, {"name": "Twitter"}]
-        mock.return_value = json_payload
+        mock_get.return_value = json_payload
 
         with patch('client.GithubOrgClient._public_repos_url',
                    new_callable=PropertyMock) as mock_public_repos_url:
@@ -51,7 +57,7 @@ class TestGithubOrgClient(unittest.TestCase):
             self.assertEqual(result, check)
 
             mock_public_repos_url.assert_called_once()
-            mock.assert_called_once()
+            mock_get.assert_called_once()
 
     @parameterized.expand([
         ({"license": {"key": "my_license"}}, "my_license", True),
