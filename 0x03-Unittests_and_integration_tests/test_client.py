@@ -22,7 +22,8 @@ class TestGithubOrgClient(unittest.TestCase):
 
         test_class = GithubOrgClient(input)
         test_class.org()
-        mock.assert_called_once_with(f'https://api.github.com/orgs/{input}')
+        url = (f'https://api.github.com/orgs/{input}')
+        mock.assert_called_once_with(url)
 
     def test_public_repos_url(self):
         """Test that the result of _public_repos_url is the
