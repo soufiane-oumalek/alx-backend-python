@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Module for testing client"""
 
+
 import unittest
 from unittest.mock import patch, PropertyMock
 from parameterized import parameterized
@@ -38,7 +39,7 @@ class TestGithubOrgClient(unittest.TestCase):
         you expect from the chosen payload.
         """
         json_payload = [{"name": "Google"}, {"name": "Twitter"}]
-        mock_get.return_value = json_payload
+        mock.return_value = json_payload
 
         with patch('client.GithubOrgClient._public_repos_url',
                    new_callable=PropertyMock) as mock_public_repos_url:
@@ -51,7 +52,7 @@ class TestGithubOrgClient(unittest.TestCase):
             self.assertEqual(result, check)
 
             mock_public_repos_url.assert_called_once()
-            mock_get.assert_called_once()
+            mock.assert_called_once()
 
     @parameterized.expand([
         ({"license": {"key": "my_license"}}, "my_license", True),
