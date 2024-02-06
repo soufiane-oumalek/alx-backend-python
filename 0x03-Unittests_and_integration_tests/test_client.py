@@ -3,9 +3,10 @@
 testing client
 """
 import unittest
-from unittest.mock import patch, PropertyMock
+from unittest.mock import patch, PropertyMock, Mock
 from parameterized import parameterized
 from client import GithubOrgClient
+from typing import Dict, Tuple, Any
 
 
 class TestGithubOrgClient(unittest.TestCase):
