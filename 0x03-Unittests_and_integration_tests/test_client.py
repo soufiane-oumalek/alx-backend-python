@@ -10,13 +10,14 @@ from typing import Dict, Tuple, Any
 
 
 class TestGithubOrgClient(unittest.TestCase):
-    """ Class testing githubOrgClient """
+    """ Class testing githubOrgClient
+    returns the correct value."""
     @parameterized.expand([
         ("google"),
         ("abc"),
     ])
     @patch('client.get_json')
-    def test_org(self, org: str, mock_get: Mock):
+    def test_org(self, org: str, mock_get: Mock) -> None:
         """
         Test GithubOrgClient.org
         """
