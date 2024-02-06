@@ -1,31 +1,27 @@
 #!/usr/bin/env python3
 """
-Module Testing Client
+Unit tests for client module
 """
-
-
 import unittest
-from unittest.mock import patch, PropertyMock, Mock
-from parameterized import parameterized
+from unittest.mock import patch, PropertyMock
+from parameterized import parameterized, parameterized_class
 from client import GithubOrgClient
-from typing import Dict, Tuple, Any
-
 
 class TestGithubOrgClient(unittest.TestCase):
-    """ Class testing githubOrgClient
-    returns the correct value."""
+    """Test cases for GithubOrgClient"""
+
     @parameterized.expand([
-        ("google"),
-        ("abc"),
+        ("google", {'login': "google"}),
+        ("abc", {'login': "abc"}),
     ])
-    @patch('client.get_json')
-    def test_org(self, org: str, mock_get: Mock) -> None:
-        """
-        Test GithubOrgClient.org
-        """
-        test_class = GithubOrgClient(org).org
-        url = f"https://api.github.com/orgs/{org}"
-        mock_get.assert_called_once_with(url)
+    @patch("client.get_json")
+    def test_org(self, org_name: str, expected_response, mock_get_json: Mock) -> None:
+        """Test org method"""
+        mock_get_json.return_value = expected_response
+        client = GithubOrgClient(org_name)
+        self.assertEqual(client.org(), expected_response)
+        url = f"https://api.github.com/orgs/{org_name}"
+        mock_get_json.assert_called_once_with(url)
 
     def test_public_repos_url(self):
         """
