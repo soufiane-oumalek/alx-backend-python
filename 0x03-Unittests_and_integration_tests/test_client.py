@@ -10,7 +10,6 @@ from typing import Dict, Tuple, Any
 
 
 class TestGithubOrgClient(unittest.TestCase):
-    """ TESTING """
     """ Class testing githubOrgClient """
     @parameterized.expand([
         ("google"),
