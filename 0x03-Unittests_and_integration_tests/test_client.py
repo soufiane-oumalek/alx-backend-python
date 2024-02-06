@@ -7,6 +7,7 @@ from unittest.mock import patch, PropertyMock
 from parameterized import parameterized, parameterized_class
 from client import GithubOrgClient
 
+
 class TestGithubOrgClient(unittest.TestCase):
     """Test cases for GithubOrgClient"""
 
@@ -15,7 +16,7 @@ class TestGithubOrgClient(unittest.TestCase):
         ("abc", {'login': "abc"}),
     ])
     @patch("client.get_json")
-    def test_org(self, org_name: str, expected_response, mock_get_json: Mock) -> None:
+    def test_org(self, org_name, expected_response, mock_get_json: Mock):
         """Test org method"""
         mock_get_json.return_value = expected_response
         client = GithubOrgClient(org_name)
